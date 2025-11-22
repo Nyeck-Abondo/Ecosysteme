@@ -1,6 +1,6 @@
 #include <SDL3/SDL.h> 
 #include <string> 
-#include "../Core/Structs.h" 
+#include "Core/Structs.h" 
 namespace Ecosystem { 
 namespace Graphics { 
 class Window { 

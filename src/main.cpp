@@ -2,7 +2,10 @@
 #include <iostream> 
 #include <cstdlib> 
 #include <ctime> 
-int main(int argc, char* argv[]) { 
+#include <windows.h>
+
+int main(int argc, char* argv[]) {
+    SetConsoleOutputCP(CP_UTF8); 
     // Initialisation de l'aléatoire 
     std::srand(static_cast<unsigned int>(std::time(nullptr))); 
      

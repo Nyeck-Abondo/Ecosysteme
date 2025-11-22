@@ -1,16 +1,20 @@
+#pragma once
 #include <cstdint> 
 #include <string> 
 #include <cmath> 
+#include <iostream>
 namespace Ecosystem { 
 namespace Core { 
-// 🏷 STRUCTS POUR LES DONNÉES SIMPLES 
+//STRUCTS POUR LES DONNÉES SIMPLES 
 struct Vector2D { 
     float x; 
     float y; 
     // 
 
     //Constructeur avec valeurs par défaut 
-    Vector2D(float xValue = 0.0f, float yValue = 0.0f) : x(xValue), y(yValue) {} 
+    Vector2D(float xValue = 0.0f, float yValue = 0.0f) : x(xValue), y(yValue) {
+        std::cout << "✅vector cree : (" << x <<"," << y <<")";
+    } 
     
     // Méthodes utilitaires 
     float Distance(const Vector2D& other) const { 
@@ -39,9 +43,10 @@ struct Color {
         // Couleurs prédéfinies 
     static Color Red() { return Color(255, 0, 0); } 
     static Color Green() { return Color(0, 255, 0); } 
-    static Color Blue() { return Color(0, 0, 255); } 
+    static Color Blue() { return Color(0, 0, 255); }
+    static Color Yellow() { return Color(255, 255, 0); }  
 }; 
-    static Color Yellow() { return Color(255, 255, 0); } 
+    
 struct Food { 
     Vector2D position; 
     float energyValue; 

@@ -12,7 +12,7 @@ Window::~Window() {
 } 
 // INITIALISATION 
 bool Window::Initialize() { 
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) { 
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) { 
         std::cerr << "❌Erreur SDL_Init: " << SDL_GetError() << std::endl; 
         return false; 
     }

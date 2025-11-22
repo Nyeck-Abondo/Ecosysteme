@@ -1,8 +1,11 @@
+#pragma once
+
 #include "Entity.h" 
 #include "Structs.h" 
 #include <vector> 
 #include <memory> 
 #include <random> 
+
 namespace Ecosystem { 
 namespace Core { 
 class Ecosystem { 
@@ -15,7 +18,7 @@ private:
     int mMaxEntities; 
     int mDayCycle; 
     //Générateur aléatoire 
-    std::mt19937 mRandomGenerator; 
+    mutable std::mt19937 mRandomGenerator; 
     //STATISTIQUES 
     struct Statistics { 
         int totalHerbivores; 
