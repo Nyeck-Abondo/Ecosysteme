@@ -186,10 +186,10 @@ void Entity::Render(SDL_Renderer* renderer) const {
     }
  }
 Vector2D Entity::StayInBounds(float worldWidth, float worldHeight) {
-    if (position.x > worldWidth - 30.0f) position.x = worldWidth -30.0f;
-    if (position.y > worldHeight - 30.0f) position.y = worldHeight - 30.0f;
-    if (position.x < 100.0f) position.x = 100.0f;
-    if (position.y < 100.0f) position.y = 100.0f;
+    if (position.x > worldWidth - 6.0f) position.x = worldWidth - 6.0f;
+    if (position.y > worldHeight - 6.0f) position.y = worldHeight - 6.0f;
+    if (position.x < 6.0f) position.x = 6.0f;
+    if (position.y < 6.0f) position.y = 6.0f;
     return position;
 }
 } // namespace Core
