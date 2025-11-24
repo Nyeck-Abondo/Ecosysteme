@@ -30,6 +30,6 @@ public:
     float GetWidth() const { return mWidth; } 
     float GetHeight() const { return mHeight; } 
     std::string GetTitle() const { return mTitle; } 
-}; 
+};
 } // namespace Graphics 
 } // namespace Ecosystem 
