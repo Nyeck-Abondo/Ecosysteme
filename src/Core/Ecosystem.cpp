@@ -35,10 +35,10 @@ void Ecosystem::Initialize(int initialHerbivores, int initialCarnivores, int ini
     std::cout << "🌱Écosystème initialisé avec " << mEntities.size() << " entités" <<std::endl;
 } 
 // MISE À JOUR 
-void Ecosystem::Update(float deltaTime) { 
+void Ecosystem::Update(float deltaTime, const std::vector<Food>& foodResources) { 
     // Mise à jour de toutes les entités 
     for (auto& entity : mEntities) { 
-        entity->Update(deltaTime); 
+        entity->Update(deltaTime, foodResources); 
     }
     // Gestion des comportements 
     HandleEating(); 

@@ -40,8 +40,8 @@ public:
     ~Entity(); 
     
     //MÉTHODES PUBLIQUES 
-    void Update(float deltaTime); 
-    void Move(float deltaTime); 
+    void Update(float deltaTime, const std::vector<Food>& foodResources); 
+    void Move(float deltaTime, const std::vector<Food>& foodResources); 
     void Eat(float energy); 
     bool CanReproduce() const; 
     std::unique_ptr<Entity> Reproduce(); 

@@ -60,18 +60,23 @@ Entity::~Entity() {
     std::cout << "💀Entité détruite: " << name << " (Âge: " << mAge << ")" << std::endl;
  }
  //MISE À JOUR PRINCIPALE
-void Entity::Update(float deltaTime) {
+void Entity::Update(float deltaTime, const std::vector<Food>& foodResources) {
     if (!mIsAlive) return;
     //PROCESSUS DE VIE
     ConsumeEnergy(deltaTime);
     Age(deltaTime);
-    Move(deltaTime);
+    Move(deltaTime, foodResources);
     CheckVitality();
 }
 //MOUVEMENT
-void Entity::Move(float deltaTime) {
+void Entity::Move(float deltaTime, const std::vector<Food>& foodResources) {
     if (mType == EntityType::PLANT) return;  // Les plantes ne bougent pas
 
+    if (mEnergy < 70.0f)
+    {
+        position = position + SeekFood(foodResources) * deltaTime * 0.025f;
+    }
+    
     //Comportement aléatoire occasionnel
     std::uniform_real_distribution<float> chance(0.0f, 1.0f);
     if (chance(mRandomGenerator) < 0.02f) {
@@ -191,6 +196,24 @@ Vector2D Entity::StayInBounds(float worldWidth, float worldHeight) {
     if (position.x < 6.0f) position.x = 6.0f;
     if (position.y < 6.0f) position.y = 6.0f;
     return position;
+}
+Vector2D Entity::SeekFood(const std::vector<Food>& foodRsources) const {
+    Vector2D posTemp = position;
+    int count;
+    float distMin = 2000.0f;
+    float distance;
+    for (int i = 0; i < foodRsources.size(); i++) {
+        distance = posTemp.Distance(foodRsources[i].position);
+        if (distMin > distance) {
+            distMin = distance;
+            count = i;
+        }
+    }
+    posTemp = posTemp.operator+(foodRsources[count].position);
+    posTemp.x /= distMin;
+    posTemp.y /= distMin;
+    
+    return posTemp;
 }
 } // namespace Core
 } // namespace Ecosystem
