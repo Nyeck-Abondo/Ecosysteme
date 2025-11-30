@@ -35,10 +35,10 @@ void Ecosystem::Initialize(int initialHerbivores, int initialCarnivores, int ini
     std::cout << "🌱Écosystème initialisé avec " << mEntities.size() << " entités" <<std::endl;
 } 
 // MISE À JOUR 
-void Ecosystem::Update(float deltaTime, const std::vector<Food>& foodResources) { 
+void Ecosystem::Update(float deltaTime) { 
     // Mise à jour de toutes les entités 
     for (auto& entity : mEntities) { 
-        entity->Update(deltaTime, foodResources); 
+        entity->Update(deltaTime); 
     }
     // Gestion des comportements 
     HandleEating(); 
@@ -46,7 +46,7 @@ void Ecosystem::Update(float deltaTime, const std::vector<Food>& foodResources) 
     RemoveDeadEntities(); 
     HandlePlantGrowth(deltaTime); 
     // Mise à jour des statistiques 
-    UpdateStatistics(); 
+    UpdateStatistics();
     mDayCycle++; 
 } 
 // GÉNÉRATION DE NOURRITURE 
@@ -92,8 +92,30 @@ void Ecosystem::HandleReproduction() {
     }
  } 
 // 🍽 GESTION DE L'ALIMENTATION 
-void Ecosystem::HandleEating() { 
-    // Ici on implémenterait la logique de recherche de nourriture 
+void Ecosystem::HandleEating() {
+    // Ici on implémenterait la logique de recherche de nourriture
+    for (auto& entity : mEntities) {
+        if (entity->GetType() == EntityType::HERBIVORE) {
+            if (entity->GetEnergy() < 40.0f) {
+                entity->position.x = entity->position.x + (entity->SeekFood(mFoodSources).x * 0.05f);
+                entity->position.y = entity->position.y + (entity->SeekFood(mFoodSources).y * 0.05f);
+                entity->StayInBounds(1200.0f, 600.0f);
+                if (sqrt(entity->SeekFood(mFoodSources).x * entity->SeekFood(mFoodSources).x + entity->SeekFood(mFoodSources).y * entity->SeekFood(mFoodSources).y) < 15.0f) {
+                    entity->Eat(50.0f);  
+                }
+            }
+            entity->position.x = entity->position.x + entity->AvoidPredators(mEntities).x * 2.5f;
+            entity->position.y = entity->position.y + entity->AvoidPredators(mEntities).y * 2.5f;
+            entity->StayInBounds(1200.0f, 600.0f);
+        }
+        if (entity->GetType() == EntityType::CARNIVORE && entity->GetEnergy() < 80.0f) {
+            entity->position.x += (entity->SeekFood(mEntities).x * 2.75f);
+            entity->position.y += (entity->SeekFood(mEntities).y * 2.75f);
+            if (std::sqrt(entity->position.x * entity->position.x + entity->position.y * entity->position.y) <= 18.0f) {
+                entity->Eat(100.0f);
+            }
+        }
+    }
     // Pour l'instant, gestion simplifiée 
     for (auto& entity : mEntities) { 
         if (entity->GetType() == EntityType::PLANT) { 
@@ -125,7 +147,7 @@ void Ecosystem::UpdateStatistics() {
 // CRÉATION D'ENTITÉ ALÉATOIRE 
 void Ecosystem::SpawnRandomEntity(EntityType type) { 
     if (mEntities.size() >= mMaxEntities) return; 
-    Vector2D position = GetRandomPosition(); 
+    Vector2D position = GetRandomPosition();
     std::string name; 
     switch (type) { 
         case EntityType::HERBIVORE: 
@@ -138,7 +160,7 @@ void Ecosystem::SpawnRandomEntity(EntityType type) {
             name = "Plant_" + std::to_string(mStats.totalPlants); 
             break; 
     }
-    mEntities.push_back(std::make_unique<Entity>(type, position, name)); 
+    mEntities.push_back(std::make_unique<Entity>(type, position, name));
 } 
 // POSITION ALÉATOIRE 
 Vector2D Ecosystem::GetRandomPosition() const { 
@@ -172,5 +194,17 @@ void Ecosystem::Render(SDL_Renderer* renderer) const {
         entity->Render(renderer); 
     }
 } 
+void Ecosystem::AddEntity(std::unique_ptr<Entity> entity) {
+   if (mEntities.size() >= mMaxEntities) {
+        std::cout<< "❌ nombre maximal atteint !!"<<std::endl;
+    }
+    else {
+        //ajout de la nouvelle entite
+        mEntities.push_back(std::move(entity));
+        //mise a jour des stats
+        UpdateStatistics();
+        std::cout<< "🍖 nouvelle entite ajoutee!!" <<std::endl;
+    }
+}
 } // namespace Core 
 } // namespace Ecosystem

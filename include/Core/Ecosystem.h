@@ -8,33 +8,33 @@
 
 namespace Ecosystem { 
 namespace Core { 
-class Ecosystem { 
+class Ecosystem {
 private: 
     //ÉTAT INTERNE 
-    std::vector<std::unique_ptr<Entity>> mEntities; 
+    std::vector<std::unique_ptr<Entity>> mEntities;
     std::vector<Food> mFoodSources; 
     float mWorldWidth; 
     float mWorldHeight; 
-    int mMaxEntities; 
-    int mDayCycle; 
+    int mMaxEntities;
+    int mDayCycle;
     //Générateur aléatoire 
-    mutable std::mt19937 mRandomGenerator; 
-    //STATISTIQUES 
-    struct Statistics { 
-        int totalHerbivores; 
-        int totalCarnivores; 
-        int totalPlants; 
-        int totalFood; 
-        int deathsToday; 
-        int birthsToday; 
+    mutable std::mt19937 mRandomGenerator;
+    //STATISTIQUES
+    struct Statistics {
+        int totalHerbivores;
+        int totalCarnivores;
+        int totalPlants;
+        int totalFood;
+        int deathsToday;
+        int birthsToday;
     } mStats; 
-public: 
+public:
     //CONSTRUCTEUR/DESTRUCTEUR 
     Ecosystem(float width, float height, int maxEntities = 500); 
     ~Ecosystem(); 
     //MÉTHODES PUBLIQUES 
     void Initialize(int initialHerbivores, int initialCarnivores, int initialPlants);
-    void Update(float deltaTime, const std::vector<Food>& foodResources); 
+    void Update(float deltaTime); 
     void SpawnFood(int count); 
     void RemoveDeadEntities(); 
     void HandleReproduction(); 
@@ -45,7 +45,8 @@ public:
     std::vector<Food> Getfood() const { return mFoodSources; }
     Statistics GetStatistics() const { return mStats; } 
     float GetWorldWidth() const { return mWorldWidth; } 
-    float GetWorldHeight() const { return mWorldHeight; } 
+    float GetWorldHeight() const { return mWorldHeight; }
+    int GetMaxEntity() const { return mMaxEntities; }
     // MÉTHODES DE GESTION 
     void AddEntity(std::unique_ptr<Entity> entity); 
     void AddFood(Vector2D position, float energy = 25.0f); 

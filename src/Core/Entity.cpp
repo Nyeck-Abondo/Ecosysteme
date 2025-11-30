@@ -60,30 +60,24 @@ Entity::~Entity() {
     std::cout << "💀Entité détruite: " << name << " (Âge: " << mAge << ")" << std::endl;
  }
  //MISE À JOUR PRINCIPALE
-void Entity::Update(float deltaTime, const std::vector<Food>& foodResources) {
+void Entity::Update(float deltaTime) {
     if (!mIsAlive) return;
     //PROCESSUS DE VIE
     ConsumeEnergy(deltaTime);
     Age(deltaTime);
-    Move(deltaTime, foodResources);
+    Move(deltaTime);
     CheckVitality();
 }
 //MOUVEMENT
-void Entity::Move(float deltaTime, const std::vector<Food>& foodResources) {
+void Entity::Move(float deltaTime) {
     if (mType == EntityType::PLANT) return;  // Les plantes ne bougent pas
-
-    if (mEnergy < 70.0f)
-    {
-        position = position + SeekFood(foodResources) * deltaTime * 0.025f;
-    }
-    
     //Comportement aléatoire occasionnel
     std::uniform_real_distribution<float> chance(0.0f, 1.0f);
     if (chance(mRandomGenerator) < 0.02f) {
         mVelocity = GenerateRandomDirection();
     }
     //intervalle du mouvement
-    position = StayInBounds(1200.0f, 800.0f);
+    position = StayInBounds(1200.0f, 800.0f); // definition du cadre dans lequel doit se deplqcer les enties 
     //Application du mouvement
     position = position + mVelocity * deltaTime * 20.0f;    
     // Consommation d'énergie due au mouvement
@@ -197,23 +191,64 @@ Vector2D Entity::StayInBounds(float worldWidth, float worldHeight) {
     if (position.y < 6.0f) position.y = 6.0f;
     return position;
 }
-Vector2D Entity::SeekFood(const std::vector<Food>& foodRsources) const {
-    Vector2D posTemp = position;
+Vector2D Entity::SeekFood(const std::vector<Food>& foodRsources) {
     int count;
+    Vector2D posTemp = position;
+    Vector2D foodPos;
     float distMin = 2000.0f;
     float distance;
-    for (int i = 0; i < foodRsources.size(); i++) {
-        distance = posTemp.Distance(foodRsources[i].position);
-        if (distMin > distance) {
+    for (auto& food : foodRsources) {
+        distance = posTemp.Distance(food.position);
+        if (distMin > distance && distance < 200.0f) {
             distMin = distance;
-            count = i;
+            foodPos = food.position;
         }
     }
-    posTemp = posTemp.operator+(foodRsources[count].position);
-    posTemp.x /= distMin;
-    posTemp.y /= distMin;
-    
+    posTemp.x = foodPos.x - posTemp.x;
+    posTemp.y = foodPos.y - posTemp.y;
     return posTemp;
+}
+
+Vector2D Entity::SeekFood(const std::vector<std::unique_ptr<Entity>>& EntityFood) {
+    Vector2D predatorPos = position;
+    Vector2D foodPos;
+    float Energie = mEnergy;
+    float distMin = 10000.0f;
+    float dist;
+    for (auto& entity : EntityFood) {
+        if (entity->GetType() == EntityType::HERBIVORE) {
+            dist = predatorPos.Distance(entity->position);
+            if (distMin >= dist) {
+                distMin = dist;
+                foodPos = entity->position;
+            }
+        }
+    }
+    predatorPos.x = (foodPos.x - predatorPos.x) / distMin;
+    predatorPos.y = (foodPos.y - predatorPos.y) / distMin;
+    return predatorPos;
+}
+
+Vector2D Entity::AvoidPredators(const std::vector<std::unique_ptr<Entity>>& predators) const {
+    Vector2D herbipos = position ;
+    Vector2D predatorPos;
+    float distMin = 3000.0f;
+    float dist;
+    for (auto& entity : predators) {
+        if (entity->GetType() == EntityType::CARNIVORE) {
+            dist = herbipos.Distance(entity->position);
+            if (distMin > dist && dist <= 15.0f) {
+                distMin = dist;
+                predatorPos = entity->position;
+            }
+        }
+    }
+    herbipos.x = ((herbipos.x - predatorPos.x) + 100.0f) / distMin;
+    herbipos.y = ((herbipos.y - predatorPos.y) +100.0f) / distMin; 
+    return herbipos;
+}
+void Entity::ApplyForce(Vector2D force) {
+    mVelocity = mVelocity + force;
 }
 } // namespace Core
 } // namespace Ecosystem

@@ -1,7 +1,7 @@
 #pragma once 
 #include "Structs.h" 
 #include <SDL3/SDL.h> 
-#include <memory> 
+#include <memory>
 #include <random> 
 #include <vector> 
 namespace Ecosystem { 
@@ -40,8 +40,8 @@ public:
     ~Entity(); 
     
     //MÉTHODES PUBLIQUES 
-    void Update(float deltaTime, const std::vector<Food>& foodResources); 
-    void Move(float deltaTime, const std::vector<Food>& foodResources); 
+    void Update(float deltaTime); 
+    void Move(float deltaTime); 
     void Eat(float energy); 
     bool CanReproduce() const; 
     std::unique_ptr<Entity> Reproduce(); 
@@ -56,9 +56,10 @@ public:
     Vector2D GetVelocity() const { return mVelocity; } 
     
     // MÉTHODES DE COMPORTEMENT 
-    Vector2D SeekFood(const std::vector<Food>& foodSources) const; 
-    Vector2D AvoidPredators(const std::vector<Entity>& predators) const; 
-    Vector2D StayInBounds(float worldWidth, float worldHeight); 
+    Vector2D SeekFood(const std::vector<Food>& foodSources);
+    Vector2D SeekFood( const std::vector<std::unique_ptr<Entity>>& EntityFood);
+    Vector2D AvoidPredators(const std::vector<std::unique_ptr<Entity>>& predators) const; 
+    Vector2D StayInBounds(float worldWidth, float worldHeight);
     
     // MÉTHODE DE RENDU 
     void Render(SDL_Renderer* renderer) const; 

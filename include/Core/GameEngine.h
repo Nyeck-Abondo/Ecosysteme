@@ -29,7 +29,7 @@ public:
     void HandleInput(SDL_Keycode key); 
 private: 
     // MÉTHODES INTERNES 
-    void Update(float deltaTime, const std::vector<Food>& foodResources); 
+    void Update(float deltaTime); 
     void Render(); 
     void RenderUI(); 
 }; 
