@@ -264,5 +264,12 @@ void Entity::ApplyForce(Vector2D force) {
     mVelocity.x /= length;
     mVelocity.y /= length;
 }
+
+/**
+ * Die - tue l'entié en vidant ses réserves d'énergie
+ */
+void Entity::Die() {
+    mEnergy = 0.0f;
+}
 } // namespace Core
 } // namespace Ecosystem

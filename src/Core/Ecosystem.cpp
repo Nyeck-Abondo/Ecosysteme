@@ -120,13 +120,14 @@ void Ecosystem::HandleEating() {
         if (entity->GetType() == EntityType::CARNIVORE) {
             if (entity->GetEnergy() < 70.0f) {
                 entity->ApplyForce(entity->SeekFood(mEntities));
-                entity->position = entity->position + entity->GetVelocity() * 1.0f;
+                entity->position = entity->position + entity->GetVelocity() * 1.15f;
             }
             for (auto& herbivor : mEntities) {
                 if (herbivor->GetType() == EntityType::HERBIVORE) {
                     float distance = entity->position.Distance(herbivor->position);
                     if (distance <= 13.0f) {
                         entity->Eat(herbivor->GetEnergy());
+                        herbivor->Die();
                     }
                     else if (distance < 30.0f) {
                         herbivor->ApplyForce(herbivor->AvoidPredators(mEntities));

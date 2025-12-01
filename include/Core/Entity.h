@@ -60,6 +60,7 @@ public:
     Vector2D SeekFood( const std::vector<std::unique_ptr<Entity>>& EntityFood);
     Vector2D AvoidPredators(const std::vector<std::unique_ptr<Entity>>& predators) const; 
     Vector2D StayInBounds(float worldWidth, float worldHeight);
+    void Die();
     
     // MÉTHODE DE RENDU 
     void Render(SDL_Renderer* renderer) const; 
