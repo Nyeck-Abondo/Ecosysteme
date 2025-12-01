@@ -199,13 +199,16 @@ Vector2D Entity::SeekFood(const std::vector<Food>& foodRsources) {
     float distance;
     for (auto& food : foodRsources) {
         distance = posTemp.Distance(food.position);
-        if (distMin > distance && distance < 200.0f) {
+        if (distMin > distance && distance < 300.0f) {
             distMin = distance;
             foodPos = food.position;
         }
     }
     posTemp.x = foodPos.x - posTemp.x;
     posTemp.y = foodPos.y - posTemp.y;
+    float length = std::sqrt(posTemp.x * posTemp.x + posTemp.y * posTemp.y);
+    posTemp.x /= length;
+    posTemp.y /= length;
     return posTemp;
 }
 
@@ -237,18 +240,29 @@ Vector2D Entity::AvoidPredators(const std::vector<std::unique_ptr<Entity>>& pred
     for (auto& entity : predators) {
         if (entity->GetType() == EntityType::CARNIVORE) {
             dist = herbipos.Distance(entity->position);
-            if (distMin > dist && dist <= 15.0f) {
+            if (distMin > dist && dist < 300.0f) {
                 distMin = dist;
                 predatorPos = entity->position;
             }
         }
     }
-    herbipos.x = ((herbipos.x - predatorPos.x) + 100.0f) / distMin;
-    herbipos.y = ((herbipos.y - predatorPos.y) +100.0f) / distMin; 
+    herbipos.x = herbipos.x - predatorPos.x;
+    herbipos.y = herbipos.y - predatorPos.y;
+    float length = std::sqrt(herbipos.x * herbipos.x + herbipos.y * herbipos.y);
+    herbipos.x /= length;
+    herbipos.y /= length; 
     return herbipos;
 }
+
+/**
+ * Applyforce - applique lq force de déplacement
+ * @force: repésente la force à appliquer sur l'entité
+ */
 void Entity::ApplyForce(Vector2D force) {
     mVelocity = mVelocity + force;
+    float length = std::sqrt(mVelocity.x * mVelocity.x + mVelocity.y * mVelocity.y);
+    mVelocity.x /= length;
+    mVelocity.x /= length;
 }
 } // namespace Core
 } // namespace Ecosystem
