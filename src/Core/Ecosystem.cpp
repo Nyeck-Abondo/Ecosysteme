@@ -99,7 +99,42 @@ void Ecosystem::HandleEating() {
         if (entity->GetType() == EntityType::PLANT) { 
             // Les plantes génèrent de l'énergie 
             entity->Eat(0.1f); 
-        } 
+        }
+
+        //logique de recherche de nourriture pour les herbivores
+        if (entity->GetType() == EntityType::HERBIVORE) {
+            if (entity->GetEnergy() < 70.0f) {
+                entity->ApplyForce(entity->SeekFood(mFoodSources));
+                entity->position = entity->position + entity->GetVelocity() * 0.5f;
+            }
+            for (auto& food : mFoodSources) {
+                float distance = entity->position.Distance(food.position);
+                if (distance <= 4.0f) {
+                    entity->Eat(25.0f);
+                    food.energyValue = 0.0f;
+                }
+            }
+        }
+
+        //logique de recherche de nourriture pour les carnivores
+        if (entity->GetType() == EntityType::CARNIVORE) {
+            if (entity->GetEnergy() < 70.0f) {
+                entity->ApplyForce(entity->SeekFood(mEntities));
+                entity->position = entity->position + entity->GetVelocity() * 1.0f;
+            }
+            for (auto& herbivor : mEntities) {
+                if (herbivor->GetType() == EntityType::HERBIVORE) {
+                    float distance = entity->position.Distance(herbivor->position);
+                    if (distance <= 13.0f) {
+                        entity->Eat(herbivor->GetEnergy());
+                    }
+                    else if (distance < 30.0f) {
+                        herbivor->ApplyForce(herbivor->AvoidPredators(mEntities));
+                        herbivor->position = herbivor->position + herbivor->GetVelocity() * 0.95f;
+                    }
+                }
+            }
+        }
     }
  } 
 // MISE À JOUR DES STATISTIQUES 

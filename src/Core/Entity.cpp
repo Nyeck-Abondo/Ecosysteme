@@ -240,7 +240,7 @@ Vector2D Entity::AvoidPredators(const std::vector<std::unique_ptr<Entity>>& pred
     for (auto& entity : predators) {
         if (entity->GetType() == EntityType::CARNIVORE) {
             dist = herbipos.Distance(entity->position);
-            if (distMin > dist && dist < 300.0f) {
+            if (distMin > dist && dist < 30.0f) {
                 distMin = dist;
                 predatorPos = entity->position;
             }
@@ -262,7 +262,7 @@ void Entity::ApplyForce(Vector2D force) {
     mVelocity = mVelocity + force;
     float length = std::sqrt(mVelocity.x * mVelocity.x + mVelocity.y * mVelocity.y);
     mVelocity.x /= length;
-    mVelocity.x /= length;
+    mVelocity.y /= length;
 }
 } // namespace Core
 } // namespace Ecosystem
