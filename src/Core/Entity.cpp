@@ -184,6 +184,14 @@ void Entity::Render(SDL_Renderer* renderer) const {
         SDL_RenderFillRect(renderer, &energyBar);
     }
  }
+
+ /**
+  * StayInBounds - fait en sorte que les entités ne sortent pas de la fenètre
+  * @param: wordlHeight : hauteur de la fenetre
+  * @param: worldWidth : largeur de la fenetre
+  * @return: position : les coordonnées pqr defqut en cqs de depassement
+  * des bordures de la fenètre SDl
+  */
 Vector2D Entity::StayInBounds(float worldWidth, float worldHeight) {
     if (position.x > worldWidth - 6.0f) position.x = worldWidth - 6.0f;
     if (position.y > worldHeight - 6.0f) position.y = worldHeight - 6.0f;
@@ -191,6 +199,17 @@ Vector2D Entity::StayInBounds(float worldWidth, float worldHeight) {
     if (position.y < 6.0f) position.y = 6.0f;
     return position;
 }
+
+/**
+ * SeekFood
+ * @brief: C'est la logique de recherche de lq nourriture pour les entiés de type
+ * herbivore. elle cqlcule un vecteur de déplacement par rapport à la 
+ * nourriture la plus proche avant de le retourner sous sa forme normalisée
+ * @param: const std::vector<Food>& foodRsources : ceci est le tableau contenant
+ * l'ensembles des nourritures presents dans l'écosystème
+ * @return: posTemp - c'est le vecteur normalié formé entre l'herbivore et la 
+ * nourriture la plus proche
+ */
 Vector2D Entity::SeekFood(const std::vector<Food>& foodRsources) {
     int count;
     Vector2D posTemp = position;
@@ -212,7 +231,18 @@ Vector2D Entity::SeekFood(const std::vector<Food>& foodRsources) {
     return posTemp;
 }
 
+/**
+ * SeekFood
+ * @brief: C'est la logique de recherche de la nourriture pour les entiés de type
+ * herbivore. elle calcule un vecteur de déplacement par rapport aux
+ * herbivores les plus proches avant de le retourner sous sa forme normalisée
+ * @param: const std::vector<std::unique_ptr<Entity>>& EntityFood : ce paramètre 
+ * représente le tableau dynamiaue contenant l'ensemble des entiées de l'écosystème
+ * @return: predatorPos : c'est le vecterur normaliser le la position du prédateur 
+ * par rapport à l'herbivore
+ */
 Vector2D Entity::SeekFood(const std::vector<std::unique_ptr<Entity>>& EntityFood) {
+    //position du carnivore courant
     Vector2D predatorPos = position;
     Vector2D foodPos;
     float Energie = mEnergy;
@@ -223,16 +253,29 @@ Vector2D Entity::SeekFood(const std::vector<std::unique_ptr<Entity>>& EntityFood
             dist = predatorPos.Distance(entity->position);
             if (distMin >= dist) {
                 distMin = dist;
+                //position de l'herbivore le plus proche
                 foodPos = entity->position;
             }
         }
     }
-    predatorPos.x = (foodPos.x - predatorPos.x) / distMin;
-    predatorPos.y = (foodPos.y - predatorPos.y) / distMin;
+    predatorPos.x = foodPos.x - predatorPos.x;
+    predatorPos.y = foodPos.y - predatorPos.y;
+    float length = std::sqrt(predatorPos.x * predatorPos.x + predatorPos.y * predatorPos.y);
+    predatorPos.x /= length;
+    predatorPos.y /= length;
     return predatorPos;
 }
 
+/**
+ * AvoidPredators
+ * @brief: cette fonction permet au entités du type HERBIVOR de fuir les CARNIVORS
+ * quand ceux ci se trouvent dans un certain périmètre autour d'eux
+ * @param: const std::vector<std::unique_ptr<Entity>>& EntityFood : ce paramètre 
+ * représente le tableau dynamiaue contenant l'ensemble des entiées de l'écosystème
+ * @return: herbipos : c'est l;inverse du vecteur carnivore -herbivore
+ */
 Vector2D Entity::AvoidPredators(const std::vector<std::unique_ptr<Entity>>& predators) const {
+    //position de l'herbivore courant
     Vector2D herbipos = position ;
     Vector2D predatorPos;
     float distMin = 3000.0f;
@@ -242,6 +285,7 @@ Vector2D Entity::AvoidPredators(const std::vector<std::unique_ptr<Entity>>& pred
             dist = herbipos.Distance(entity->position);
             if (distMin > dist && dist < 30.0f) {
                 distMin = dist;
+                //position du carnivore le plus proche
                 predatorPos = entity->position;
             }
         }
@@ -249,14 +293,15 @@ Vector2D Entity::AvoidPredators(const std::vector<std::unique_ptr<Entity>>& pred
     herbipos.x = herbipos.x - predatorPos.x;
     herbipos.y = herbipos.y - predatorPos.y;
     float length = std::sqrt(herbipos.x * herbipos.x + herbipos.y * herbipos.y);
+    //normalisation du vecteur de deplacement
     herbipos.x /= length;
     herbipos.y /= length; 
     return herbipos;
 }
 
 /**
- * Applyforce - applique lq force de déplacement
- * @force: repésente la force à appliquer sur l'entité
+ * Applyforce - applique la force de déplacement
+ * @param: force : repésente la force à appliquer sur l'entité
  */
 void Entity::ApplyForce(Vector2D force) {
     mVelocity = mVelocity + force;
