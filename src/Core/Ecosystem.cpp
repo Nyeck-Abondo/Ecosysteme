@@ -110,7 +110,7 @@ void Ecosystem::HandleEating() {
             for (auto& food : mFoodSources) {
                 float distance = entity->position.Distance(food.position);
                 if (distance <= 4.0f) {
-                    entity->Eat(25.0f);
+                    entity->Eat(45.0f);
                     food.energyValue = 0.0f;
                 }
             }
@@ -126,7 +126,7 @@ void Ecosystem::HandleEating() {
                 if (herbivor->GetType() == EntityType::HERBIVORE) {
                     float distance = entity->position.Distance(herbivor->position);
                     if (distance <= 13.0f) {
-                        entity->Eat(herbivor->GetEnergy());
+                        entity->Eat(30.0f);
                         herbivor->Die();
                     }
                     else if (distance < 30.0f) {

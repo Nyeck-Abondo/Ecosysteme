@@ -205,7 +205,7 @@ Vector2D Entity::StayInBounds(float worldWidth, float worldHeight) {
  * @brief: C'est la logique de recherche de lq nourriture pour les entiés de type
  * herbivore. elle cqlcule un vecteur de déplacement par rapport à la 
  * nourriture la plus proche avant de le retourner sous sa forme normalisée
- * @param: const std::vector<Food>& foodRsources : ceci est le tableau contenant
+ * @param foodRsources : ceci est le tableau contenant
  * l'ensembles des nourritures presents dans l'écosystème
  * @return: posTemp - c'est le vecteur normalié formé entre l'herbivore et la 
  * nourriture la plus proche
@@ -233,10 +233,10 @@ Vector2D Entity::SeekFood(const std::vector<Food>& foodRsources) {
 
 /**
  * SeekFood
- * @brief: C'est la logique de recherche de la nourriture pour les entiés de type
+ * @brief C'est la logique de recherche de la nourriture pour les entiés de type
  * herbivore. elle calcule un vecteur de déplacement par rapport aux
  * herbivores les plus proches avant de le retourner sous sa forme normalisée
- * @param: const std::vector<std::unique_ptr<Entity>>& EntityFood : ce paramètre 
+ * @param const std::vector<std::unique_ptr<Entity>>& EntityFood : ce paramètre 
  * représente le tableau dynamiaue contenant l'ensemble des entiées de l'écosystème
  * @return: predatorPos : c'est le vecterur normaliser le la position du prédateur 
  * par rapport à l'herbivore
@@ -270,9 +270,9 @@ Vector2D Entity::SeekFood(const std::vector<std::unique_ptr<Entity>>& EntityFood
  * AvoidPredators
  * @brief: cette fonction permet au entités du type HERBIVOR de fuir les CARNIVORS
  * quand ceux ci se trouvent dans un certain périmètre autour d'eux
- * @param: const std::vector<std::unique_ptr<Entity>>& EntityFood : ce paramètre 
+ * @param EntityFood : ce paramètre 
  * représente le tableau dynamiaue contenant l'ensemble des entiées de l'écosystème
- * @return: herbipos : c'est l;inverse du vecteur carnivore -herbivore
+ * @return herbipos : c'est l;inverse du vecteur carnivore -herbivore
  */
 Vector2D Entity::AvoidPredators(const std::vector<std::unique_ptr<Entity>>& predators) const {
     //position de l'herbivore courant
