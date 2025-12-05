@@ -13,7 +13,7 @@ GameEngine::GameEngine(const std::string& title, float width, float height)
       mAccumulatedTime(0.0f) {} 
 // INITIALISATION 
 bool GameEngine::Initialize() { 
-    if (!mWindow.Initialize()) { 
+    if (!mWindow.Initialize()) {
         return false; 
     }
     mEcosystem.Initialize(20, 5, 30);  // 20 herbivores, 5 carnivores, 30 plantes 
